@@ -1,10 +1,20 @@
 const express = require("express");
 const { Bot } = require("grammy");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-const bot = new Bot("TOPSECRET:TOKEN");
+const TOKEN = "TOPSECRET:TOKEN";
+const bot = new Bot(TOKEN);
 const app = express();
 
 app.use(express.json());
+
+app.use(
+  "/bot-api",
+  createProxyMiddleware({
+    target: "https://api.telegram.org/file/bot" + TOKEN,
+    changeOrigin: true, // Make sure to set this, otherwise your requests will be rejected by Telegram servers
+  })
+);
 
 app.get("/:id", async (req, res) => {
   const { id } = req.params;
@@ -21,7 +31,7 @@ app.get("/:id", async (req, res) => {
 
     const file = await bot.api.getFile(file_id);
 
-    res.json(file);
+    res.json({ src: "http://localhost:3000/bot-api/" + file.file_path });
   }
 
   res.json({ src: "" });
