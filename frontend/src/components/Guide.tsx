@@ -12,7 +12,7 @@ export default function Guide() {
     const fetchProflePicture = async () => {
       const response = await fetch(`http://localhost:3000/${user?.id}`);
       const data = await response.json();
-      setSrc(data.result);
+      setSrc(data.src);
     };
 
     fetchProflePicture();
