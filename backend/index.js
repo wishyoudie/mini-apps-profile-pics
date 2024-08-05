@@ -15,9 +15,13 @@ app.get("/:id", async (req, res) => {
     const currentPhoto = photos[0];
     // currentPhoto is an array of the same photo in different resolutions. We want the last one.
 
-    const bestLookingSelfie = currentPhoto[currentPhoto.length - 1];
+    const { file_id } = currentPhoto[currentPhoto.length - 1];
 
-    res.json(bestLookingSelfie);
+    console.log(file_id); // Save to database
+
+    const file = await bot.api.getFile(file_id);
+
+    res.json(file);
   }
 
   res.json({ src: "" });
